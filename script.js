@@ -76,17 +76,17 @@ function registerUser() {
         return;
     }
 
-    // Générer un code d’activation à 6 chiffres
+    // Générer un code d’activation unique à 6 chiffres
     const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Enregistrer l’utilisateur et le code
+    // Enregistrer l’utilisateur et le code dans localStorage
     users[phone] = { password, activated: false, registrationDate: new Date().toISOString() };
     pendingActivations[phone] = { phone, timestamp: new Date().toLocaleString(), activationCode, activated: false };
 
     localStorage.setItem('tifa_users', JSON.stringify(users));
     localStorage.setItem('tifa_pending', JSON.stringify(pendingActivations));
 
-    alert('Inscription réussie ! Un admin vous enverra votre code d’activation.');
+    alert('Inscription réussie ! Un admin vous contactera avec votre code d’activation.');
     showActivationForm(phone);
 }
 
@@ -143,7 +143,7 @@ function activateAccount() {
         alert('Compte activé ! Vous pouvez vous connecter.');
         showLoginForm();
     } else {
-        alert('Code invalide');
+        alert('Code invalide ou non attribué pour ce numéro');
     }
 }
 
@@ -190,7 +190,7 @@ function updatePendingList() {
         btn.addEventListener('click', function() {
             const code = this.getAttribute('data-code');
             navigator.clipboard.writeText(code);
-            alert(`Code ${code} copié ! Envoie-le à l’utilisateur.`);
+            alert(`Code ${code} copié ! Envoie-le à l’utilisateur avec le numéro ${this.parentElement.querySelector('span').textContent}.`);
         });
     });
 }
