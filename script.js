@@ -2,7 +2,7 @@
 let users = JSON.parse(localStorage.getItem('tifa_users')) || {};
 let pendingActivations = JSON.parse(localStorage.getItem('tifa_pending')) || {};
 let currentUser = null;
-const ADMIN_PHONE = "261340000000"; // Ton numéro admin
+const ADMIN_PHONE = "261346086885"; // Ton numéro admin
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
