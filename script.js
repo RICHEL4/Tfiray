@@ -2,7 +2,7 @@
 let users = JSON.parse(localStorage.getItem('tifa_users')) || {};
 let pendingActivations = JSON.parse(localStorage.getItem('tifa_pending')) || {};
 let currentUser = null;
-const ADMIN_PHONE = "261346086885"; // Ton numéro admin
+const ADMIN_PHONE = "261340000000"; // Ton numéro admin
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
@@ -76,17 +76,13 @@ function registerUser() {
         return;
     }
 
-    // Générer un code d’activation unique à 6 chiffres
-    const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Enregistrer l’utilisateur et le code dans localStorage
     users[phone] = { password, activated: false, registrationDate: new Date().toISOString() };
-    pendingActivations[phone] = { phone, timestamp: new Date().toLocaleString(), activationCode, activated: false };
-
+    pendingActivations[phone] = { phone, timestamp: new Date().toLocaleString(), activationCode: null, activated: false };
+    
     localStorage.setItem('tifa_users', JSON.stringify(users));
     localStorage.setItem('tifa_pending', JSON.stringify(pendingActivations));
-
-    alert('Inscription réussie ! Un admin vous contactera avec votre code d’activation.');
+    
+    alert('Inscription réussie! Attendez votre code d\'activation de l\'administrateur.');
     showActivationForm(phone);
 }
 
@@ -109,7 +105,7 @@ function loginUser() {
     }
 
     if (!users[phone].activated) {
-        if (confirm('Compte non activé. Entrer votre code d\'activation ?')) {
+        if (confirm('Compte non activé. Entrer votre code d\'activation?')) {
             showActivationForm(phone);
         }
         return;
@@ -135,15 +131,15 @@ function activateAccount() {
         return;
     }
 
-    if (pendingActivations[phone]?.activationCode === code) {
+    if (pendingActivations[phone]?.activationCode === code && code !== null) {
         users[phone].activated = true;
         pendingActivations[phone].activated = true;
         localStorage.setItem('tifa_users', JSON.stringify(users));
         localStorage.setItem('tifa_pending', JSON.stringify(pendingActivations));
-        alert('Compte activé ! Vous pouvez vous connecter.');
+        alert('Compte activé! Vous pouvez vous connecter.');
         showLoginForm();
     } else {
-        alert('Code invalide ou non attribué pour ce numéro');
+        alert('Code invalide ou non attribué par l\'administrateur');
     }
 }
 
@@ -179,18 +175,42 @@ function updatePendingList() {
             li.innerHTML = `
                 <span>${phone}</span>
                 <span>${data.timestamp}</span>
-                <span>Code: <strong>${data.activationCode}</strong></span>
-                <button class="copy-btn" data-code="${data.activationCode}">Copier</button>
+                <input type="text" class="activation-code-input" placeholder="Entrez un code (6 chiffres)" maxlength="6" value="${data.activationCode || ''}">
+                <button class="set-code-btn" data-phone="${phone}">Définir Code</button>
+                <button class="approve-btn" data-phone="${phone}">Approuver</button>
             `;
             list.appendChild(li);
         }
     }
 
-    document.querySelectorAll('.copy-btn').forEach(btn => {
+    document.querySelectorAll('.set-code-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const code = this.getAttribute('data-code');
-            navigator.clipboard.writeText(code);
-            alert(`Code ${code} copié ! Envoie-le à l’utilisateur avec le numéro ${this.parentElement.querySelector('span').textContent}.`);
+            const phone = this.getAttribute('data-phone');
+            const codeInput = this.previousElementSibling;
+            const code = codeInput.value.trim();
+
+            if (!/^\d{6}$/.test(code)) {
+                alert('Le code doit être un nombre de 6 chiffres');
+                return;
+            }
+
+            pendingActivations[phone].activationCode = code;
+            localStorage.setItem('tifa_pending', JSON.stringify(pendingActivations));
+            alert(`Code ${code} défini pour ${phone}`);
+        });
+    });
+
+    document.querySelectorAll('.approve-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const phone = this.getAttribute('data-phone');
+            if (!pendingActivations[phone].activationCode) {
+                alert('Veuillez d\'abord définir un code d\'activation');
+                return;
+            }
+            pendingActivations[phone].activated = true;
+            localStorage.setItem('tifa_pending', JSON.stringify(pendingActivations));
+            updatePendingList();
+            alert('Utilisateur approuvé! Il peut utiliser son code.');
         });
     });
 }
