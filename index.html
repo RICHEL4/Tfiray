@@ -10,14 +10,58 @@
     <div class="background-animation"></div>
     <div class="container" id="auth-container">
         <h1>TAFA IRAY</h1>
-        <!-- Message de blocage -->
-        <div id="blocked-message" class="auth-form">
-            <h2>Accès Temporairement Bloqué</h2>
-            <p>Le site est actuellement en maintenance pour les utilisateurs non premium.</p>
-            <p>Veuillez contacter le support pour plus d'informations.</p>
-            <button id="contact-support">Contact Support</button>
+        
+        <!-- Formulaire d'inscription -->
+        <div id="register-form" class="auth-form">
+            <input type="tel" id="register-phone" placeholder="Numéro (261...)">
+            <input type="password" id="register-password" placeholder="Mot de passe">
+            <button id="register-btn">S'inscrire</button>
+            <p class="switch-auth">Déjà inscrit ? <span id="show-login">Se connecter</span></p>
+        </div>
+        
+        <!-- Formulaire de connexion -->
+        <div id="login-form" class="auth-form" style="display: none;">
+            <input type="tel" id="login-phone" placeholder="Numéro (261...)">
+            <input type="password" id="login-password" placeholder="Mot de passe">
+            <button id="login-btn">Se connecter</button>
+            <p class="switch-auth">Pas de compte ? <span id="show-register">S'inscrire</span></p>
+        </div>
+        
+        <!-- Formulaire d'activation -->
+        <div id="activation-form" class="auth-form" style="display: none;">
+            <h3>Activation du compte</h3>
+            <input type="tel" id="activation-phone" placeholder="Votre numéro">
+            <input type="text" id="activation-code" placeholder="Code reçu">
+            <button id="activate-btn">Activer</button>
+            <p class="switch-auth">Revenir à la <span id="show-login-from-activation">connexion</span></p>
         </div>
     </div>
+
+    <!-- Interface principale -->
+    <div class="container" id="main-container" style="display: none;">
+        <h1>TAFA IRAY</h1>
+        <div class="response-box" id="response"></div>
+        <div class="high-odds-box" id="high-odds"></div>
+        <input type="text" id="time-input" placeholder="Heure (HH:MM)">
+        <button id="update-btn">OK</button>
+        <button id="logout-btn">Déconnexion</button>
+        
+        <div class="top-tour">
+            <h2>HISTORIQUE</h2>
+            <ul id="top-tour-list"></ul>
+        </div>
+    </div>
+
+    <!-- Panel Admin -->
+    <div class="admin-panel" id="admin-panel" style="display: none;">
+        <h2>PANEL ADMIN</h2>
+        <div class="pending-users">
+            <h3>Utilisateurs en attente</h3>
+            <ul id="pending-users-list"></ul>
+        </div>
+        <button id="admin-logout-btn">Déconnexion Admin</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
