@@ -10,46 +10,12 @@
     <div class="background-animation"></div>
     <div class="container" id="auth-container">
         <h1>TAFA IRAY</h1>
-        <!-- Formulaire d'inscription -->
-        <div id="register-form" class="auth-form">
-            <input type="text" id="register-username" placeholder="Nom d'utilisateur">
-            <input type="password" id="register-password" placeholder="Mot de passe">
-            <button id="register-btn">S'inscrire</button>
-            <p class="switch-auth">Déjà inscrit ? <span id="show-login">Se connecter</span></p>
-        </div>
-        <!-- Formulaire de connexion -->
-        <div id="login-form" class="auth-form" style="display: none;">
-            <input type="text" id="login-username" placeholder="Nom d'utilisateur">
-            <input type="password" id="login-password" placeholder="Mot de passe">
-            <button id="login-btn">Se connecter</button>
-            <p class="switch-auth">Pas de compte ? <span id="show-register">S'inscrire</span></p>
-        </div>
-        <!-- Formulaire de code d'activation -->
-        <div id="activation-form" class="auth-form" style="display: none;">
-            <input type="text" id="activation-code" placeholder="Entrez le code d'activation">
-            <button id="activate-btn">Activer</button>
-        </div>
-    </div>
-
-    <!-- Contenu principal (caché par défaut) -->
-    <div class="container" id="main-container" style="display: none;">
-        <h1>TAFA IRAY</h1>
-        <div class="response-box" id="response">
-            <!-- Les heures décalées et les prédictions seront affichées ici -->
-        </div>
-        <div class="high-odds-box" id="high-odds">
-            <!-- Les cotes élevées seront affichées ici -->
-        </div>
-        <input type="text" id="time-input" placeholder="Entrez l'heure (HH:MM)">
-        <button id="update-btn">OK</button>
-        <button id="logout-btn" style="margin-top: 1rem; background-color: #555;">Déconnexion</button>
-
-        <!-- Section Top Tour -->
-        <div class="top-tour">
-            <h2>HISTORIQUE</h2>
-            <ul id="top-tour-list">
-                <!-- Les meilleurs tours seront affichés ici -->
-            </ul>
+        <!-- Message de blocage -->
+        <div id="blocked-message" class="auth-form">
+            <h2>Accès Temporairement Bloqué</h2>
+            <p>Le site est actuellement en maintenance pour les utilisateurs non premium.</p>
+            <p>Veuillez contacter le support pour plus d'informations.</p>
+            <button id="contact-support">Contact Support</button>
         </div>
     </div>
     <script src="script.js"></script>
