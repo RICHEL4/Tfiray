@@ -2,7 +2,16 @@
 const validCodes = ['1012', '2345', '6363', '6969', '9878', '4125', '7485'];
 let isAuthenticated = false;
 
-// Vérifier l'authentification au chargement
+// Configuration des multiplicateurs fixes
+const PREDICTION_CONFIG = {
+  firstMultiplier: 4.5,    // Premier multiplicateur fixe
+  secondMultiplier: 5.2,   // Deuxième multiplicateur fixe
+  riskLevel: 50,           // Niveau de risque fixe
+  firstDelay: 3,           // Délai en minutes pour la première prédiction
+  secondDelay: 4           // Délai en minutes pour la deuxième prédiction
+};
+
+// Vérifier l'authentification
 function checkAuth() {
   const authContainer = document.getElementById('authContainer');
   const appContent = document.getElementById('appContent');
@@ -10,52 +19,62 @@ function checkAuth() {
   if (isAuthenticated) {
     authContainer.style.display = 'none';
     appContent.style.display = 'block';
+    appContent.classList.add('fade-in');
   } else {
     authContainer.style.display = 'block';
     appContent.style.display = 'none';
   }
 }
 
-// Vérifier les identifiants
+// Vérification des identifiants
 function verifyAuth() {
-  const phoneNumber = document.getElementById('phoneNumber').value;
-  const activationCode = document.getElementById('activationCode').value;
+  const phoneNumber = document.getElementById('phoneNumber').value.trim();
+  const activationCode = document.getElementById('activationCode').value.trim();
   const errorElement = document.getElementById('authError');
   
-  // Réinitialiser les erreurs
   errorElement.textContent = '';
   
-  // Validation du numéro
   if (!phoneNumber || phoneNumber.length < 10 || !/^[0-9]+$/.test(phoneNumber)) {
     errorElement.textContent = 'Numéro de téléphone invalide';
     return;
   }
   
-  // Validation du code
   if (!validCodes.includes(activationCode)) {
     errorElement.textContent = 'Code d\'activation incorrect';
     return;
   }
   
-  // Authentification réussie
   isAuthenticated = true;
   checkAuth();
-  
-  // Ajouter une animation
-  document.getElementById('appContent').classList.add('fade-in');
 }
 
-// Horloge en temps réel
+// Mise à jour de l'horloge en temps réel
 function updateClock() {
   const now = new Date();
-  const timeString = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const timeString = now.toLocaleTimeString('fr-FR', { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+  });
   document.getElementById('liveClock').textContent = timeString;
 }
 
-setInterval(updateClock, 1000);
-updateClock();
+// Calcul de l'heure future
+function calculateFutureTime(baseTime, minutesToAdd) {
+  const time = new Date(baseTime);
+  time.setMinutes(time.getMinutes() + minutesToAdd);
+  return time;
+}
 
-// Générer les prédictions avec multiplicateurs fixes
+// Formatage de l'heure
+function formatTime(date) {
+  return date.toLocaleTimeString('fr-FR', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+}
+
+// Génération des prédictions fixes
 function generatePrediction() {
   if (!isAuthenticated) {
     checkAuth();
@@ -70,46 +89,33 @@ function generatePrediction() {
     return;
   }
 
-  // Calcul des heures
   const [hours, minutes] = timeInput.split(':').map(Number);
-  
-  const timePlus3 = new Date();
-  timePlus3.setHours(hours, minutes + 3);
-  
-  const timePlus4 = new Date();
-  timePlus4.setHours(hours, minutes + 4);
+  const baseTime = new Date();
+  baseTime.setHours(hours, minutes, 0, 0);
 
-  // Formatage
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  };
+  const firstPredictionTime = calculateFutureTime(baseTime, PREDICTION_CONFIG.firstDelay);
+  const secondPredictionTime = calculateFutureTime(baseTime, PREDICTION_CONFIG.secondDelay);
 
-  // Multiplicateurs fixes
-  const multiplier1 = '4.5'; // Premier multiplicateur fixe
-  const multiplier2 = '5.2'; // Deuxième multiplicateur fixe
-
-  // Niveau de risque fixe
-  const riskLevel = '50';
-
-  // Affichage des résultats
   resultDiv.innerHTML = `
     <h2>Résultats de prédiction</h2>
     <div class="prediction">
-      <p><strong>Heure :</strong> ${formatTime(timePlus3)}</p>
-      <p><strong>Multiplicateur :</strong> x${multiplier1}</p>
+      <p><strong>Heure :</strong> ${formatTime(firstPredictionTime)}</p>
+      <p><strong>Multiplicateur :</strong> x${PREDICTION_CONFIG.firstMultiplier.toFixed(1)}</p>
     </div>
     <div class="prediction">
-      <p><strong>Heure :</strong> ${formatTime(timePlus4)}</p>
-      <p><strong>Multiplicateur :</strong> x${multiplier2}</p>
+      <p><strong>Heure :</strong> ${formatTime(secondPredictionTime)}</p>
+      <p><strong>Multiplicateur :</strong> x${PREDICTION_CONFIG.secondMultiplier.toFixed(1)}</p>
     </div>
-    <div class="risk">Niveau de risque : ${riskLevel}</div>
+    <div class="risk">Niveau de risque conseillé : ${PREDICTION_CONFIG.riskLevel}%</div>
   `;
 }
 
 // Initialisation
-checkAuth();
-
-// Empêcher le zoom sur mobile
-document.addEventListener('gesturestart', function(e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+  updateClock();
+  setInterval(updateClock, 1000);
+  
+  // Empêcher le zoom sur mobile
+  document.addEventListener('gesturestart', (e) => e.preventDefault());
 });
