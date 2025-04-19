@@ -1,51 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAFA IRAY</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TAFA IRAY - Prédiction Aviator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="background-animation"></div>
+  <div class="container">
+    <div class="header">
+      <h1>TAFA IRAY - Prédiction Aviator</h1>
+      <div class="live-clock" id="liveClock"></div>
+    </div>
     
-    <!-- Formulaire d'inscription -->
-    <div class="container" id="register-container">
-        <h1>Inscription</h1>
+    <div class="content">
+      <div id="authContainer" class="auth-container fade-in">
+        <h2>Accès Sécurisé</h2>
         <div class="form-group">
-            <label for="phone">Numéro  (+261):</label>
-            <input type="text" id="phone" placeholder="Ex: 341234567" pattern="[0-9]{9}" required>
+          <label for="phoneNumber">Numéro de téléphone</label>
+          <input type="tel" id="phoneNumber" placeholder="Ex: 0341234567" required>
         </div>
         <div class="form-group">
-            <label for="activation-code">Code d'Activation:</label>
-            <input type="password" id="activation-code" placeholder="Entrez le code" required>
+          <label for="activationCode">Code d'activation</label>
+          <input type="password" id="activationCode" placeholder="Code à 4 chiffres" required>
+          <span id="authError" class="error"></span>
         </div>
-        <button id="register-btn">S'inscrire</button>
-        <p class="error-message" id="register-error"></p>
+        <button class="btn" onclick="verifyAuth()">Valider</button>
+      </div>
+      
+      <div id="appContent" class="app-content">
+        <div class="form-group">
+          <label for="timeInput">Heure de prédiction</label>
+          <input type="time" id="timeInput" required>
+        </div>
+        <button class="btn" onclick="generatePrediction()">Générer Prédiction</button>
+        <div id="result" class="result"></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Contenu principal (caché initialement) -->
-    <div class="container" id="main-container" style="display: none;">
-        <h1>TAFA IRAY</h1>
-        <div class="user-info">
-            <span>Connecté en tant que: <span id="user-phone"></span></span>
-            <button id="logout-btn">Déconnexion</button>
-        </div>
-        <div class="response-box" id="response">
-            <!-- Les prédictions seront affichées ici -->
-        </div>
-        <input type="time" id="time-input" placeholder="Entrez l'heure">
-        <button id="update-btn">OK</button>
-
-        <!-- Section Top Tour -->
-        <div class="top-tour">
-            <h2>HISTORIQUE</h2>
-            <ul id="top-tour-list">
-                <!-- Les meilleurs tours seront affichés ici -->
-            </ul>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
