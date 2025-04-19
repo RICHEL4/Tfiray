@@ -55,7 +55,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// Générer les prédictions
+// Générer les prédictions avec multiplicateurs fixes
 function generatePrediction() {
   if (!isAuthenticated) {
     checkAuth();
@@ -84,17 +84,12 @@ function generatePrediction() {
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Multiplicateurs aléatoires entre 4 et 6
-  const getRandomMultiplier = () => {
-    return (Math.random() * 2 + 4).toFixed(1); // Entre 4.0 et 6.0
-  };
-  
-  const multiplier1 = getRandomMultiplier();
-  const multiplier2 = getRandomMultiplier();
+  // Multiplicateurs fixes
+  const multiplier1 = '4.5'; // Premier multiplicateur fixe
+  const multiplier2 = '5.2'; // Deuxième multiplicateur fixe
 
-  // Niveaux de risque
-  const riskLevels = [10, 20, 50, 60, 100, 150];
-  const randomRisk = riskLevels[Math.floor(Math.random() * riskLevels.length)];
+  // Niveau de risque fixe
+  const riskLevel = '50';
 
   // Affichage des résultats
   resultDiv.innerHTML = `
@@ -107,8 +102,7 @@ function generatePrediction() {
       <p><strong>Heure :</strong> ${formatTime(timePlus4)}</p>
       <p><strong>Multiplicateur :</strong> x${multiplier2}</p>
     </div>
-    ${multiplier1 > 5.5 || multiplier2 > 5.5 ? 
-      `<div class="risk">Niveau de risque : ${randomRisk}</div>` : ''}
+    <div class="risk">Niveau de risque : ${riskLevel}</div>
   `;
 }
 
