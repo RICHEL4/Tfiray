@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TAFA IRAY - Prédiction Aviator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,7 +26,10 @@
           <input type="password" id="activationCode" placeholder="Code à 4 chiffres" required>
           <span id="authError" class="error"></span>
         </div>
-        <button class="btn" onclick="verifyAuth()">Valider</button>
+        <button class="btn" onclick="verifyAuth()">
+          <span id="authBtnText">Valider</span>
+          <span id="authSpinner" class="spinner" style="display: none;"></span>
+        </button>
       </div>
       
       <div id="appContent" class="app-content">
@@ -33,8 +37,23 @@
           <label for="timeInput">Heure de prédiction</label>
           <input type="time" id="timeInput" required>
         </div>
-        <button class="btn" onclick="generatePrediction()">Générer Prédiction</button>
+        
+        <div class="toggle-container" id="difficultToggleContainer">
+          <span class="toggle-label">Tour difficile</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="difficultMode">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <button class="btn" onclick="generatePrediction()">
+          <span id="predictBtnText">Générer Prédiction</span>
+          <span id="predictSpinner" class="spinner" style="display: none;"></span>
+        </button>
         <div id="result" class="result"></div>
+        <div class="footer">
+          © 2023 TAFA IRAY - Pour usage personnel uniquement
+        </div>
       </div>
     </div>
   </div>
