@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prédiction Aviator</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlByw6lkaWN0aW9uIEF2aWF0b3IiLAogICJzaG9ydF9uYW1lIjogIkF2aWF0b3IiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBhMGEwYSIsCiAgInRoZW1lX2NvbG9yIjogIiNmZjYzNDciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJhc3NldHMvaWNvbi0xOTJ4MTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICJhc3NldHMvaWNvbi01MTJ4NTEyLnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
 </head>
 <body>
     <div class="background-animation"></div>
@@ -29,11 +28,11 @@
     <div class="container" id="main-container" style="display: none;">
         <h1>Prédiction Aviator</h1>
         <div class="user-info">
-            Connecté en tant que: <span id="user-phone"></span>
+            <span>Connecté en tant que: <span id="user-phone"></span></span>
             <button id="logout-btn">Déconnexion</button>
         </div>
         <div class="response-box" id="response">
-            <!-- Les heures décalées et les prédictions seront affichées ici -->
+            <!-- Les prédictions seront affichées ici -->
         </div>
         <input type="time" id="time-input" placeholder="Entrez l'heure">
         <button id="update-btn">OK</button>
