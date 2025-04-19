@@ -1,140 +1,161 @@
-// Configuration des comptes
-const appConfig = {
-  masterPassword: "t@f@1r@y", // Mot de passe principal
-  validCodes: {
-    '1012': { used: false, phone: '' },
-    '2345': { used: false, phone: '' },
-    '6363': { used: false, phone: '' },
-    '6969': { used: false, phone: '' },
-    '9878': { used: false, phone: '' },
-    '4125': { used: false, phone: '' },
-    '7485': { used: false, phone: '' }
-  }
-};
-
+// Codes d'activation valides
+const validCodes = ['1012', '2345', '6363', '6969', '9878', '4125', '7485'];
 let isAuthenticated = false;
 const predictionsCache = {};
-let currentAuthStep = 1;
 
-// Initialisation
-function init() {
-  checkSavedSession();
-  updateClock();
-  setInterval(updateClock, 1000);
-  preventInspection();
-}
-
-// Vérifier une session existante
-function checkSavedSession() {
-  const savedSession = localStorage.getItem('aviatorSession');
-  if (savedSession) {
-    const session = JSON.parse(savedSession);
-    if (session.expires > Date.now() && appConfig.validCodes[session.code]) {
-      isAuthenticated = true;
-      showAppContent();
-    } else {
-      localStorage.removeItem('aviatorSession');
-    }
-  }
-}
-
-// Étape 1: Vérification du mot de passe
-function verifyPassword() {
-  const password = document.getElementById('password').value;
-  const errorElement = document.getElementById('passwordError');
-  
-  if (password === appConfig.masterPassword) {
-    document.getElementById('passwordContainer').classList.remove('active');
-    document.getElementById('codeContainer').classList.add('active');
-    currentAuthStep = 2;
-  } else {
-    errorElement.textContent = 'Mot de passe incorrect';
-  }
-}
-
-// Étape 2: Vérification du code d'activation
-function verifyCode() {
-  const phoneNumber = document.getElementById('phoneNumber').value;
-  const activationCode = document.getElementById('activationCode').value;
-  const errorElement = document.getElementById('codeError');
-  
-  // Validation
-  if (!phoneNumber || phoneNumber.length < 10 || !/^[0-9]+$/.test(phoneNumber)) {
-    errorElement.textContent = 'Numéro invalide';
-    return;
-  }
-  
-  if (!appConfig.validCodes[activationCode]) {
-    errorElement.textContent = 'Code invalide';
-    return;
-  }
-  
-  if (appConfig.validCodes[activationCode].used) {
-    errorElement.textContent = 'Code déjà utilisé';
-    return;
-  }
-  
-  // Activer le compte
-  appConfig.validCodes[activationCode].used = true;
-  appConfig.validCodes[activationCode].phone = phoneNumber;
-  
-  // Sauvegarder la session (valide 30 jours)
-  const session = {
-    code: activationCode,
-    phone: phoneNumber,
-    expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
-  };
-  localStorage.setItem('aviatorSession', JSON.stringify(session));
-  
-  isAuthenticated = true;
-  showAppContent();
-}
-
-// Afficher l'application
-function showAppContent() {
-  document.getElementById('passwordContainer').style.display = 'none';
-  document.getElementById('codeContainer').style.display = 'none';
-  document.getElementById('appContent').style.display = 'block';
-}
-
-// Fonctions pour les prédictions (inchangées)
+// Fonction de hachage simple pour créer une graine basée sur l'heure
 function hashTime(timeStr) {
   let hash = 0;
   for (let i = 0; i < timeStr.length; i++) {
     hash = (hash << 5) - hash + timeStr.charCodeAt(i);
-    hash |= 0;
+    hash |= 0; // Convertir en entier 32bits
   }
   return hash;
 }
 
-function generatePrediction() {
-  if (!isAuthenticated) return;
+// Générateur pseudo-aléatoire déterministe
+function seededRandom(seed) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Vérifier l'authentification au chargement
+function checkAuth() {
+  const authContainer = document.getElementById('authContainer');
+  const appContent = document.getElementById('appContent');
   
-  const timeInput = document.getElementById('timeInput').value;
-  if (!timeInput) {
-    document.getElementById('result').innerHTML = '<div class="risk">Veuillez sélectionner une heure</div>';
+  if (isAuthenticated) {
+    authContainer.style.display = 'none';
+    appContent.style.display = 'block';
+  } else {
+    authContainer.style.display = 'block';
+    appContent.style.display = 'none';
+  }
+}
+
+// Vérifier les identifiants
+function verifyAuth() {
+  const phoneNumber = document.getElementById('phoneNumber').value;
+  const activationCode = document.getElementById('activationCode').value;
+  const errorElement = document.getElementById('authError');
+  
+  // Réinitialiser les erreurs
+  errorElement.textContent = '';
+  
+  // Validation du numéro
+  if (!phoneNumber || phoneNumber.length < 10 || !/^[0-9]+$/.test(phoneNumber)) {
+    errorElement.textContent = 'Numéro de téléphone invalide';
+    return;
+  }
+  
+  // Validation du code
+  if (!validCodes.includes(activationCode)) {
+    errorElement.textContent = 'Code d\'activation incorrect';
+    return;
+  }
+  
+  // Authentification réussie
+  isAuthenticated = true;
+  checkAuth();
+  
+  // Ajouter une animation
+  document.getElementById('appContent').classList.add('fade-in');
+}
+
+// Horloge en temps réel
+function updateClock() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('liveClock').textContent = timeString;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Générer les prédictions (déterministe basé sur l'heure)
+function generatePrediction() {
+  if (!isAuthenticated) {
+    checkAuth();
     return;
   }
 
-  // Génération des prédictions...
-  // (Conserver le code existant de génération des prédictions)
+  const timeInput = document.getElementById('timeInput').value;
+  const resultDiv = document.getElementById('result');
+
+  if (!timeInput) {
+    resultDiv.innerHTML = '<div class="risk">Veuillez sélectionner une heure valide</div>';
+    return;
+  }
+
+  // Vérifier le cache
+  if (predictionsCache[timeInput]) {
+    displayPredictions(predictionsCache[timeInput]);
+    return;
+  }
+
+  // Calcul des heures
+  const [hours, minutes] = timeInput.split(':').map(Number);
+  
+  const timePlus3 = new Date();
+  timePlus3.setHours(hours, minutes + 3);
+  
+  const timePlus4 = new Date();
+  timePlus4.setHours(hours, minutes + 4);
+
+  // Formatage
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Créer une graine basée sur l'heure
+  const seed = hashTime(timeInput);
+  
+  // Multiplicateurs déterministes entre 4 et 6
+  const multiplier1 = (seededRandom(seed) * 2 + 4).toFixed(1);
+  const multiplier2 = (seededRandom(seed + 1) * 2 + 4).toFixed(1);
+
+  // Niveaux de risque
+  const riskLevels = [10, 20, 50, 60, 100, 150];
+  const riskIndex = Math.floor(seededRandom(seed + 2) * riskLevels.length);
+  const randomRisk = riskLevels[riskIndex];
+
+  // Stocker dans le cache
+  const predictionData = {
+    timePlus3: formatTime(timePlus3),
+    timePlus4: formatTime(timePlus4),
+    multiplier1,
+    multiplier2,
+    showRisk: multiplier1 > 5.5 || multiplier2 > 5.5,
+    randomRisk
+  };
+  
+  predictionsCache[timeInput] = predictionData;
+  
+  // Afficher les résultats
+  displayPredictions(predictionData);
 }
 
-// Empêcher l'inspection
-function preventInspection() {
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('keydown', e => {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-      e.preventDefault();
-    }
-  });
+function displayPredictions(data) {
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+    <h2>Résultats de prédiction</h2>
+    <div class="prediction">
+      <p><strong>Heure :</strong> ${data.timePlus3}</p>
+      <p><strong>Multiplicateur :</strong> x${data.multiplier1}</p>
+    </div>
+    <div class="prediction">
+      <p><strong>Heure :</strong> ${data.timePlus4}</p>
+      <p><strong>Multiplicateur :</strong> x${data.multiplier2}</p>
+    </div>
+    ${data.showRisk ? 
+      `<div class="risk">Niveau de risque : ${data.randomRisk}</div>` : ''}
+  `;
 }
 
-// Horloge
-function updateClock() {
-  const now = new Date();
-  document.getElementById('liveClock').textContent = now.toLocaleTimeString('fr-FR');
-}
+// Initialisation
+checkAuth();
 
-// Initialiser l'application
-window.onload = init;
+// Empêcher le zoom sur mobile
+document.addEventListener('gesturestart', function(e) {
+  e.preventDefault();
+});
