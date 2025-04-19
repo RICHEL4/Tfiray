@@ -14,20 +14,8 @@
     </div>
     
     <div class="content">
-      <!-- Étape 1 : Authentification par mot de passe -->
-      <div id="passwordContainer" class="auth-container fade-in">
-        <h2>Authentification</h2>
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <input type="password" id="password" placeholder="Entrez votre mot de passe" required>
-          <span id="passwordError" class="error"></span>
-        </div>
-        <button class="btn" onclick="verifyPassword()">Valider</button>
-      </div>
-      
-      <!-- Étape 2 : Code d'activation -->
-      <div id="codeContainer" class="auth-container" style="display: none;">
-        <h2>Code d'activation</h2>
+      <div id="authContainer" class="auth-container fade-in">
+        <h2>Accès Sécurisé</h2>
         <div class="form-group">
           <label for="phoneNumber">Numéro de téléphone</label>
           <input type="tel" id="phoneNumber" placeholder="Ex: 0341234567" required>
@@ -35,12 +23,11 @@
         <div class="form-group">
           <label for="activationCode">Code d'activation</label>
           <input type="password" id="activationCode" placeholder="Code à 4 chiffres" required>
-          <span id="codeError" class="error"></span>
+          <span id="authError" class="error"></span>
         </div>
-        <button class="btn" onclick="verifyCode()">Activer</button>
+        <button class="btn" onclick="verifyAuth()">Valider</button>
       </div>
       
-      <!-- Contenu de l'application -->
       <div id="appContent" class="app-content">
         <div class="form-group">
           <label for="timeInput">Heure de prédiction</label>
