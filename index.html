@@ -9,8 +9,29 @@
 </head>
 <body>
     <div class="background-animation"></div>
-    <div class="container">
+    
+    <!-- Formulaire d'inscription -->
+    <div class="container" id="register-container">
+        <h1>Inscription</h1>
+        <div class="form-group">
+            <label for="phone">Numéro Malagasy (+261):</label>
+            <input type="text" id="phone" placeholder="Ex: 341234567" pattern="[0-9]{9}" required>
+        </div>
+        <div class="form-group">
+            <label for="activation-code">Code d'Activation:</label>
+            <input type="password" id="activation-code" placeholder="Entrez le code" required>
+        </div>
+        <button id="register-btn">S'inscrire</button>
+        <p class="error-message" id="register-error"></p>
+    </div>
+
+    <!-- Contenu principal (caché initialement) -->
+    <div class="container" id="main-container" style="display: none;">
         <h1>Prédiction Aviator</h1>
+        <div class="user-info">
+            Connecté en tant que: <span id="user-phone"></span>
+            <button id="logout-btn">Déconnexion</button>
+        </div>
         <div class="response-box" id="response">
             <!-- Les heures décalées et les prédictions seront affichées ici -->
         </div>
