@@ -1,53 +1,164 @@
-/* ... (conserve tous les styles existants) ... */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/* Nouveaux styles pour l'inscription */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0a0a0a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #1e1e2f, #2a2a40, #3a3a5a, #1e1e2f);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    color: #ff6347;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
 .form-group {
     margin-bottom: 1.5rem;
-    text-align: left;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     color: #ff6347;
-    font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 2px solid #ff6347;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ff6347;
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    outline: none;
+    color: white;
+    font-size: 1rem;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff4500;
 }
 
 .error-message {
     color: #ff3333;
     margin-top: 1rem;
-    font-weight: bold;
+    text-align: center;
 }
 
 .user-info {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.75rem;
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
 }
 
 #logout-btn {
     width: auto;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+    padding: 5px 10px;
     background-color: #ff3333;
 }
 
-#logout-btn:hover {
-    background-color: #cc0000;
+.response-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    min-height: 100px;
+}
+
+.response-box p {
+    margin: 0.5rem 0;
+    color: #ff6347;
+    font-weight: bold;
+}
+
+input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1.5rem;
+    border-radius: 5px;
+    border: 1px solid #ff6347;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+.top-tour {
+    margin-top: 1.5rem;
+}
+
+.top-tour h2 {
+    color: #ff6347;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+#top-tour-list {
+    list-style: none;
+}
+
+#top-tour-list li {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#top-tour-list li span {
+    color: #ff6347;
+    font-weight: bold;
 }
