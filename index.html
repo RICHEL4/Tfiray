@@ -4,10 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TAFA IRAY PRO - Premium</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <!-- Modal fisoratana anarana -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Hisoratra</h2>
+                <span class="close-btn" id="closeModal">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label class="form-label">Laharan'ny finday (Madagascar)</label>
+                        <div class="phone-input">
+                            <div class="phone-prefix">+261</div>
+                            <input type="tel" id="phoneNumber" class="form-control" placeholder="32 12 345 67" required>
+                        </div>
+                        <div class="error-message" id="phoneError">Tsy mety ny endrika (ohatra: 32 12 345 67)</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%;">
+                        <span id="btnText">Hisoratra</span>
+                    </button>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary" id="loginBtnModal">
+                            Manana kaonty efa? Hiditra
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p class="small-text">Amin'ny fisoratanao anarana, dia manaiky ny fepetra sy ny politika fiainana manokana ianao.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal fanamafisana -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Fanamafisana</h2>
+                <span class="close-btn" id="closeConfirmationModal">×</span>
+            </div>
+            <div class="modal-body">
+                <p>Nalefa ny kaody fanamafisana tamin'ny nomerao :</p>
+                <p style="font-weight: 600; margin: 10px 0;">+261 <span id="displayPhoneNumber"></span></p>
+                <p style="margin-bottom: 15px;">Ampidiro ny kaody nomena anao :</p>
+                
+                <form id="confirmationForm">
+                    <div class="form-group">
+                        <input type="text" id="confirmationCode" class="form-control" placeholder="Kaody TAFA" required>
+                        <div class="error-message" id="codeError">Tsy mety ny kaody (TAFA ny kaody)</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Hamafiso
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <div class="logo">
@@ -26,20 +90,99 @@
             <div class="card prediction-card">
                 <h2 class="card-title">FAMINAVINANA TAFA IRAY</h2>
                 <div class="prediction-value" id="predictionValue">--x</div>
-                <div class="timer" id="timer">Ampidiro ny fotoana</div>
+                <div class="timer" id="timer">Ampidiro ny fotoana hanombohana</div>
                 
                 <div class="form-group">
+                    <label class="form-label">Fotoana ankehitriny (HH:MM)</label>
                     <input type="time" id="timeInput" class="form-control" step="60">
                 </div>
                 
-                <div class="btn-group">
-                    <button class="btn btn-primary" id="calculateBtn">Kajy</button>
-                    <button class="btn btn-outline" id="resetBtn">Averina</button>
+                <div class="auto-refresh">
+                    <span>Famerenana mandeha ho azy</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoRefresh">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-primary" id="calculateBtn" style="flex: 1;">Kajy</button>
+                    <button class="btn btn-outline" id="resetBtn" style="flex: 1;">Averina</button>
+                </div>
+                
+                <div class="prediction-info" id="predictionInfo" style="margin-top: 20px;">
+                    <p><i class="fas fa-chart-line"></i> Vita ny fanadihadiana ny fironana</p>
+                    <div class="crash-times">
+                        <div class="crash-time">
+                            <div><i class="fas fa-clock"></i> Crash lehibe</div>
+                            <div class="multiplier" id="mainMultiplier">--x</div>
+                            <div id="nextCrashTime">--:--</div>
+                        </div>
+                        <div class="crash-time">
+                            <div><i class="fas fa-clock"></i> Crash faharoa</div>
+                            <div class="multiplier" id="secondMultiplier">--x</div>
+                            <div id="secondCrashTime">--:--</div>
+                        </div>
+                    </div>
+                    <div class="risk-display">
+                        <i class="fas fa-exclamation-triangle"></i> Risika: <span id="riskValue">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card history-card">
+                <h2 class="card-title">TANTARA <small>(12 farany)</small></h2>
+                <div class="history-list" id="historyList">
+                    <!-- Historique dynamique -->
                 </div>
             </div>
         </div>
+
+        <!-- Top Tour section -->
+        <div class="card top-tour-container">
+            <h2 class="card-title">FAMINAVINANA TOP TOUR</h2>
+            <div class="top-tour-input">
+                <input type="number" id="topTourInput" placeholder="Ampidiro ny laharana tour (ohatra: 90)" min="1">
+                <button class="btn btn-primary" id="calculateTopTour">Kajy</button>
+            </div>
+            <div class="top-tour-results" id="topTourResults">
+                <div class="top-tour-result">
+                    <div class="tour-number">TOUR --</div>
+                    <div class="multipliers">--x SA --x</div>
+                    <div class="time">--:--</div>
+                </div>
+                <div class="top-tour-result">
+                    <div class="tour-number">TOUR --</div>
+                    <div class="multipliers">--x SA --x</div>
+                    <div class="time">--:--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card stats-card">
+            <h2 class="card-title">STATISTIKA</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">Marina</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPredictions">0</div>
+                    <div class="stat-label">Faminavinana</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="averageMultiplier">0x</div>
+                    <div class="stat-label">Salanisa</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 TAFA IRAY PRO - Premium 2.1.0</p>
+            <p><i class="fas fa-exclamation-triangle"></i> Ampiasao ho fampahalalana fotsiny. Filokana andraikitra.</p>
+        </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
