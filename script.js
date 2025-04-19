@@ -130,8 +130,8 @@ function updateDisplay() {
 
 function updateTopTour() {
     const sortedTours = [...tours].sort((a, b) => {
-        if (a.prediction === "x2-x4" && b.prediction !== "x2-x4") return -1;
-        if (b.prediction === "x2-x4" && a.prediction !== "x2-x4") return 1;
+        if (a.prediction === "x4" && b.prediction !== "x4") return -1;
+        if (b.prediction === "x4" && a.prediction !== "x4") return 1;
         if (a.prediction === "x10+" && b.prediction !== "x10+") return -1;
         if (b.prediction === "x10+" && a.prediction !== "x10+") return 1;
         return 0;
