@@ -1,5 +1,5 @@
 // Codes d'activation valides
-const validCodes = ['1210', '4545', '6666', '6868', '9000', '5454', '7485'];
+const validCodes = ['1012', '2345', '6363', '6969', '9878', '4125', '7485'];
 let isAuthenticated = false;
 const predictionsCache = {};
 
