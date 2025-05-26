@@ -1,63 +1,52 @@
-<..!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TAFA IRAY - Prédiction Aviator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accès restreint</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #333;
+    }
+    .restriction-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 500px;
+      text-align: center;
+    }
+    h1 {
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    p {
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+    .contact-link {
+      color: #1976d2;
+      text-decoration: none;
+    }
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>TAFA IRAY - Prédiction Aviator</h1>
-      <div class="live-clock" id="liveClock"></div>
-    </div>
-    
-    <div class="content">
-      <div id="authContainer" class="auth-container fade-in">
-        <h2>Accès Sécurisé</h2>
-        <div class="form-group">
-          <label for="phoneNumber">Numéro de téléphone</label>
-          <input type="tel" id="phoneNumber" placeholder="Ex: 0341234567" required>
-        </div>
-        <div class="form-group">
-          <label for="activationCode">Code d'activation</label>
-          <input type="password" id="activationCode" placeholder="Code à 4 chiffres" required>
-          <span id="authError" class="error"></span>
-        </div>
-        <button class="btn" onclick="verifyAuth()">
-          <span id="authBtnText">Valider</span>
-          <span id="authSpinner" class="spinner" style="display: none;"></span>
-        </button>
-      </div>
-      
-      <div id="appContent" class="app-content">
-        <div class="form-group">
-          <label for="timeInput">Heure de prédiction</label>
-          <input type="time" id="timeInput" required>
-        </div>
-        
-        <div class="toggle-container" id="difficultToggleContainer">
-          <span class="toggle-label">Tour difficile</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="difficultMode">
-            <span class="slider"></span>
-          </label>
-        </div>
-        
-        <button class="btn" onclick="generatePrediction()">
-          <span id="predictBtnText">Générer Prédiction</span>
-          <span id="predictSpinner" class="spinner" style="display: none;"></span>
-        </button>
-        <div id="result" class="result"></div>
-        <div class="footer">
-          © 2023 TAFA IRAY - Pour usage personnel uniquement
-        </div>
-      </div>
-    </div>
+  <div class="restriction-container">
+    <h1>Accès non autorisé</h1>
+    <p>L'accès à cette ressource n'est pas disponible pour le moment.</p>
+    <p>Pour toute question, veuillez contacter l'administrateur du réseau.</p>
+    <p><a href="#" class="contact-link">Retour à la page précédente</a></p>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
